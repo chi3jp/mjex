@@ -1,0 +1,142 @@
+/* プロンプト履歴管理システム用スタイル */
+
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    background-color: #f1f3f5;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* テーブルスタイル */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    border-top: none;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.prompt-text {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* タグスタイル */
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    margin: 0.1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.tag.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* 評価スター */
+.rating-stars {
+    color: #ffc107;
+}
+
+.rating-stars .bi-star-fill {
+    margin-right: 2px;
+}
+
+.rating-input {
+    color: #adb5bd;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.rating-input i {
+    margin-right: 5px;
+}
+
+.rating-input i.active {
+    color: #ffc107;
+}
+
+/* 画像プレビュー */
+.image-preview-item {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* 詳細画像 */
+.detail-image {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.detail-image:hover {
+    transform: scale(1.05);
+}
+
+/* フィルターバッジ */
+.filter-badge {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ページネーション */
+.pagination {
+    margin-bottom: 0;
+}
+
+/* アニメーション */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    .prompt-text {
+        max-width: 150px;
+    }
+}

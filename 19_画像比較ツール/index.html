@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI画像比較ツール</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-images"></i> AI画像比較ツール
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">比較ツール</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">履歴</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ヘルプ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>デモ・プロトタイプ版</strong> - このアプリはデモンストレーション用です。実際の画像比較結果はシミュレーションされています。
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">画像アップロード</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">比較方法を選択</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="compare-type" id="compare-side" checked>
+                                <label class="btn btn-outline-primary" for="compare-side">横並び比較</label>
+                                
+                                <input type="radio" class="btn-check" name="compare-type" id="compare-slider">
+                                <label class="btn btn-outline-primary" for="compare-slider">スライダー比較</label>
+                                
+                                <input type="radio" class="btn-check" name="compare-type" id="compare-overlay">
+                                <label class="btn btn-outline-primary" for="compare-overlay">オーバーレイ比較</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="image-upload-1" class="form-label">画像1をアップロード</label>
+                                    <input type="file" class="form-control" id="image-upload-1" accept="image/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">または画像URLを入力</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="image-url-1" placeholder="https://example.com/image1.jpg">
+                                        <button class="btn btn-outline-secondary" type="button" id="fetch-url-1">取得</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="image-upload-2" class="form-label">画像2をアップロード</label>
+                                    <input type="file" class="form-control" id="image-upload-2" accept="image/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">または画像URLを入力</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="image-url-2" placeholder="https://example.com/image2.jpg">
+                                        <button class="btn btn-outline-secondary" type="button" id="fetch-url-2">取得</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">比較ラベル (オプション)</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="label-1" placeholder="画像1のラベル">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="label-2" placeholder="画像2のラベル">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button class="btn btn-primary" id="compare-btn" disabled>
+                                <i class="bi bi-arrows-angle-expand"></i> 画像を比較
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">比較オプション</h5>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#optionsCollapse">
+                            <i class="bi bi-gear"></i> 設定
+                        </button>
+                    </div>
+                    <div class="collapse show" id="optionsCollapse">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">表示サイズ</label>
+                                <select class="form-select" id="display-size">
+                                    <option value="small">小 (500px)</option>
+                                    <option value="medium" selected>中 (800px)</option>
+                                    <option value="large">大 (1200px)</option>
+                                    <option value="original">原寸大</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">比較ツール</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="show-grid" checked>
+                                    <label class="form-check-label" for="show-grid">
+                                        グリッド表示
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="show-histogram">
+                                    <label class="form-check-label" for="show-histogram">
+                                        ヒストグラム表示
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="show-metadata">
+                                    <label class="form-check-label" for="show-metadata">
+                                        メタデータ表示
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">グリッド設定</label>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">行数</span>
+                                    <input type="number" class="form-control" id="grid-rows" value="3" min="1" max="10">
+                                    <span class="input-group-text">列数</span>
+                                    <input type="number" class="form-control" id="grid-cols" value="3" min="1" max="10">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="grid-golden-ratio">
+                                    <label class="form-check-label" for="grid-golden-ratio">
+                                        黄金比グリッド表示
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">オーバーレイ設定</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="overlay-mode" id="overlay-normal" checked>
+                                    <label class="form-check-label" for="overlay-normal">
+                                        通常
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="overlay-mode" id="overlay-difference">
+                                    <label class="form-check-label" for="overlay-difference">
+                                        差分表示
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="overlay-mode" id="overlay-blend">
+                                    <label class="form-check-label" for="overlay-blend">
+                                        ブレンド
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">比較結果</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary me-2" id="download-btn" disabled>
+                        <i class="bi bi-download"></i> ダウンロード
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" id="share-btn" disabled>
+                        <i class="bi bi-share"></i> 共有
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="comparison-container" class="text-center">
+                    <div id="no-images" class="py-5">
+                        <i class="bi bi-images" style="font-size: 3rem;"></i>
+                        <h3 class="mt-3">画像を選択してください</h3>
+                        <p class="text-muted">2つの画像をアップロードして「画像を比較」ボタンをクリックしてください</p>
+                    </div>
+                    
+                    <div id="side-by-side-view" class="comparison-view d-none">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="image-container">
+                                    <div class="image-label" id="side-label-1">画像1</div>
+                                    <div class="image-wrapper">
+                                        <img id="side-image-1" src="" alt="画像1">
+                                        <div class="grid-overlay" id="side-grid-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="image-container">
+                                    <div class="image-label" id="side-label-2">画像2</div>
+                                    <div class="image-wrapper">
+                                        <img id="side-image-2" src="" alt="画像2">
+                                        <div class="grid-overlay" id="side-grid-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="slider-view" class="comparison-view d-none">
+                        <div class="slider-container">
+                            <div class="image-label" id="slider-label-1">画像1</div>
+                            <div class="image-label" id="slider-label-2">画像2</div>
+                            <div class="slider-wrapper">
+                                <img id="slider-image-1" src="" alt="画像1">
+                                <div class="slider-divisor">
+                                    <div class="slider-handle"></div>
+                                </div>
+                                <img id="slider-image-2" src="" alt="画像2">
+                                <div class="grid-overlay" id="slider-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="overlay-view" class="comparison-view d-none">
+                        <div class="overlay-container">
+                            <div class="image-label" id="overlay-label">オーバーレイ表示</div>
+                            <div class="overlay-wrapper">
+                                <img id="overlay-image-1" src="" alt="画像1">
+                                <img id="overlay-image-2" src="" alt="画像2" class="overlay-top">
+                                <div class="grid-overlay" id="overlay-grid"></div>
+                            </div>
+                            <div class="overlay-controls mt-3">
+                                <label for="opacity-slider" class="form-label">不透明度: <span id="opacity-value">50</span>%</label>
+                                <input type="range" class="form-range" id="opacity-slider" min="0" max="100" value="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="analysis-container" class="mt-4 d-none">
+                    <ul class="nav nav-tabs" id="analysisTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="metadata-tab" data-bs-toggle="tab" data-bs-target="#metadata" type="button" role="tab">メタデータ</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="histogram-tab" data-bs-toggle="tab" data-bs-target="#histogram" type="button" role="tab">ヒストグラム</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="difference-tab" data-bs-toggle="tab" data-bs-target="#difference" type="button" role="tab">差分分析</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3 border border-top-0" id="analysisTabsContent">
+                        <div class="tab-pane fade show active" id="metadata" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>画像1のメタデータ</h6>
+                                    <table class="table table-sm">
+                                        <tbody id="metadata-1">
+                                            <tr>
+                                                <th>解像度</th>
+                                                <td>1024 x 1024 px</td>
+                                            </tr>
+                                            <tr>
+                                                <th>アスペクト比</th>
+                                                <td>1:1</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ファイルサイズ</th>
+                                                <td>2.4 MB</td>
+                                            </tr>
+                                            <tr>
+                                                <th>フォーマット</th>
+                                                <td>PNG</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>画像2のメタデータ</h6>
+                                    <table class="table table-sm">
+                                        <tbody id="metadata-2">
+                                            <tr>
+                                                <th>解像度</th>
+                                                <td>1024 x 1024 px</td>
+                                            </tr>
+                                            <tr>
+                                                <th>アスペクト比</th>
+                                                <td>1:1</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ファイルサイズ</th>
+                                                <td>2.1 MB</td>
+                                            </tr>
+                                            <tr>
+                                                <th>フォーマット</th>
+                                                <td>PNG</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="histogram" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>画像1のヒストグラム</h6>
+                                    <canvas id="histogram-1" height="200"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>画像2のヒストグラム</h6>
+                                    <canvas id="histogram-2" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="difference" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>差分サマリー</h6>
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>類似度</th>
+                                                <td>78%</td>
+                                            </tr>
+                                            <tr>
+                                                <th>主な差分領域</th>
+                                                <td>背景、色調</td>
+                                            </tr>
+                                            <tr>
+                                                <th>構図の差</th>
+                                                <td>低</td>
+                                            </tr>
+                                            <tr>
+                                                <th>色彩の差</th>
+                                                <td>中</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>差分マップ</h6>
+                                    <div class="difference-map-container">
+                                        <img id="difference-map" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="差分マップ">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 AI画像比較ツール</p>
+            <p class="text-muted small">このツールはMidjourneyの公式ツールではありません</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

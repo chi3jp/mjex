@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI画像品質分析ツール</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">AI画像品質分析ツール</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">ホーム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">履歴</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ヘルプ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container my-4">
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>デモ・プロトタイプ版</strong> - このアプリはデモンストレーション用です。実際の画像分析には、画像認識APIが必要です。
+            <hr>
+            <p>推奨API: <a href="https://cloud.google.com/vision" target="_blank">Google Cloud Vision API</a> (無料枠あり) または <a href="https://www.clarifai.com/" target="_blank">Clarifai API</a> (無料プランあり)</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">画像アップロード</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="image-upload" class="form-label">画像ファイルを選択</label>
+                            <input type="file" class="form-control" id="image-upload" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">または画像をドラッグ&ドロップ</label>
+                            <div id="drop-area" class="drop-area d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+                                    <i class="bi bi-cloud-arrow-up" style="font-size: 2rem;"></i>
+                                    <p class="mb-0">ここに画像をドロップ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image-url" class="form-label">または画像URLを入力</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="image-url" placeholder="https://example.com/image.jpg">
+                                <button class="btn btn-outline-secondary" type="button" id="fetch-url-btn">取得</button>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button id="analyze-btn" class="btn btn-primary" disabled>
+                                <i class="bi bi-search"></i> 画像を分析
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">プレビュー</h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="preview-container" class="preview-container d-flex align-items-center justify-content-center">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-image" style="font-size: 3rem;"></i>
+                                <p>画像をアップロードするとここにプレビューが表示されます</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h2 class="h5 mb-0">分析結果</h2>
+            </div>
+            <div class="card-body">
+                <div id="loading" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">画像を分析中...</p>
+                </div>
+                <div id="results-container" class="d-none">
+                    <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab">サマリー</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="technical-tab" data-bs-toggle="tab" data-bs-target="#technical" type="button" role="tab">技術詳細</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="aesthetic-tab" data-bs-toggle="tab" data-bs-target="#aesthetic" type="button" role="tab">美的評価</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="recommendations-tab" data-bs-toggle="tab" data-bs-target="#recommendations" type="button" role="tab">改善提案</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3 border border-top-0 rounded-bottom" id="resultTabsContent">
+                        <div class="tab-pane fade show active" id="summary" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">総合評価</h5>
+                                            <div class="text-center">
+                                                <div class="display-4 fw-bold text-primary" id="overall-score">85</div>
+                                                <div class="progress mt-2">
+                                                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <p class="mt-2" id="overall-comment">良好な品質です。いくつかの改善点があります。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">主な特徴</h5>
+                                            <ul id="main-features">
+                                                <li>解像度: 1024 x 1024 (適切)</li>
+                                                <li>アスペクト比: 1:1 (正方形)</li>
+                                                <li>色彩: 鮮やか</li>
+                                                <li>シャープネス: 高い</li>
+                                                <li>ノイズレベル: 低い</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">カテゴリ別評価</h5>
+                                            <canvas id="radar-chart" width="400" height="250"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="technical" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>画像情報</h5>
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <th>解像度</th>
+                                                <td id="resolution">1024 x 1024 ピクセル</td>
+                                            </tr>
+                                            <tr>
+                                                <th>アスペクト比</th>
+                                                <td id="aspect-ratio">1:1 (正方形)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ファイルサイズ</th>
+                                                <td id="file-size">2.4 MB</td>
+                                            </tr>
+                                            <tr>
+                                                <th>フォーマット</th>
+                                                <td id="format">PNG</td>
+                                            </tr>
+                                            <tr>
+                                                <th>カラーモード</th>
+                                                <td id="color-mode">RGB</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>技術評価</h5>
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <th>シャープネス</th>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>ノイズレベル</th>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 15%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">15%</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>圧縮アーティファクト</th>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>ダイナミックレンジ</th>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>色彩精度</th>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">90%</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>ヒストグラム分析</h5>
+                                    <canvas id="histogram-chart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="aesthetic" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>構図分析</h5>
+                                    <div id="composition-analysis">
+                                        <div class="mb-3">
+                                            <label class="form-label">バランス</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">80%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">対称性</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">三分割法</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">90%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">視線誘導</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>色彩分析</h5>
+                                    <div id="color-analysis">
+                                        <div class="mb-3">
+                                            <label class="form-label">色調の調和</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">彩度</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">70%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">コントラスト</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">80%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">色の多様性</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>主要カラーパレット</h5>
+                                    <div id="color-palette" class="d-flex justify-content-center my-3">
+                                        <div class="color-swatch" style="background-color: #3366CC;"></div>
+                                        <div class="color-swatch" style="background-color: #DC3912;"></div>
+                                        <div class="color-swatch" style="background-color: #FF9900;"></div>
+                                        <div class="color-swatch" style="background-color: #109618;"></div>
+                                        <div class="color-swatch" style="background-color: #990099;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="recommendations" role="tabpanel">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 以下は画像品質を向上させるための提案です。
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">技術的改善点</h5>
+                                            <ul id="technical-recommendations">
+                                                <li>解像度を2048x2048に上げることで、より詳細な表現が可能になります。</li>
+                                                <li>シャープネスをわずかに上げて、細部の表現を向上させてください。</li>
+                                                <li>ダイナミックレンジを広げるために、明暗のコントラストを強調してください。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">美的改善点</h5>
+                                            <ul id="aesthetic-recommendations">
+                                                <li>主要被写体をもう少し右に配置すると、構図のバランスが向上します。</li>
+                                                <li>背景の彩度を下げて、主要被写体をより引き立てることができます。</li>
+                                                <li>色相を少し暖色系に寄せると、より親しみやすい印象になります。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">プロンプト改善提案</h5>
+                                    <p>現在のプロンプトに以下の要素を追加することで、画像品質が向上する可能性があります：</p>
+                                    <div class="bg-light p-3 rounded">
+                                        <code id="prompt-recommendations">highly detailed, 8k, sharp focus, professional lighting, vibrant colors, dramatic composition</code>
+                                        <button class="btn btn-sm btn-outline-primary ms-2" id="copy-prompt-btn">
+                                            <i class="bi bi-clipboard"></i> コピー
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="no-results" class="text-center py-5">
+                    <i class="bi bi-bar-chart" style="font-size: 3rem;"></i>
+                    <h3 class="mt-3">分析結果がここに表示されます</h3>
+                    <p class="text-muted">画像をアップロードして「画像を分析」ボタンをクリックしてください</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-light py-4 mt-4">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 AI画像品質分析ツール</p>
+            <p class="text-muted small">このツールはMidjourneyの公式ツールではありません</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

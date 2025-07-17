@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIプロンプトコラボレーション管理システム</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-people"></i> AIプロンプトコラボレーション
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">プロジェクト</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">チーム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">カレンダー</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            <span class="badge bg-danger">3</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                            <li><h6 class="dropdown-header">通知</h6></li>
+                            <li><a class="dropdown-item" href="#">山田さんがプロジェクトに参加しました</a></li>
+                            <li><a class="dropdown-item" href="#">「風景写真」プロジェクトが更新されました</a></li>
+                            <li><a class="dropdown-item" href="#">明日のミーティングリマインダー</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">すべての通知を見る</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://via.placeholder.com/32" alt="ユーザーアイコン" class="rounded-circle me-2" width="32" height="32">
+                            <span>ユーザー名</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="#">プロフィール</a></li>
+                            <li><a class="dropdown-item" href="#">設定</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">ログアウト</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- サイドバー -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="bi bi-house"></i> ダッシュボード
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-kanban"></i> プロジェクト管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-chat"></i> チャット
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-file-earmark-text"></i> プロンプトライブラリ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-calendar3"></i> スケジュール
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-graph-up"></i> 分析
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>プロジェクト</span>
+                        <a class="link-secondary" href="#" aria-label="新規プロジェクト">
+                            <i class="bi bi-plus-circle"></i>
+                        </a>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-circle-fill text-success"></i> 風景写真
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-circle-fill text-primary"></i> キャラクターデザイン
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-circle-fill text-warning"></i> SF世界観
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-circle-fill text-danger"></i> ファンタジー
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>チーム</span>
+                        <a class="link-secondary" href="#" aria-label="新規チーム">
+                            <i class="bi bi-plus-circle"></i>
+                        </a>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people"></i> デザインチーム
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people"></i> マーケティングチーム
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- メインコンテンツ -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="alert alert-warning mt-3" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>デモ・プロトタイプ版</strong> - このアプリはデモンストレーション用です。実際のコラボレーション機能にはデータベースとユーザー認証が必要です。
+                </div>
+                
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">ダッシュボード</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">共有</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">エクスポート</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <i class="bi bi-calendar3"></i> 今週
+                        </button>
+                    </div>
+                </div>
+
+                <!-- プロジェクト概要 -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">進行中のプロジェクト</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-primary">
+                                        <i class="bi bi-kanban"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h2 class="stat-value">4</h2>
+                                        <p class="stat-change positive">
+                                            <i class="bi bi-arrow-up"></i> 1 <span class="text-muted">vs 先週</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">チームメンバー</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-success">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h2 class="stat-value">12</h2>
+                                        <p class="stat-change positive">
+                                            <i class="bi bi-arrow-up"></i> 2 <span class="text-muted">vs 先月</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">今週のタスク</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-warning">
+                                        <i class="bi bi-check2-square"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h2 class="stat-value">23</h2>
+                                        <p class="stat-change negative">
+                                            <i class="bi bi-arrow-down"></i> 5 <span class="text-muted">vs 先週</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h5 class="card-title">共有プロンプト</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="stat-icon bg-info">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h2 class="stat-value">47</h2>
+                                        <p class="stat-change positive">
+                                            <i class="bi bi-arrow-up"></i> 12 <span class="text-muted">vs 先月</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- プロジェクト進捗 -->
+                <h2 class="h4 mb-3">プロジェクト進捗</h2>
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>プロジェクト名</th>
+                                                <th>担当者</th>
+                                                <th>期限</th>
+                                                <th>進捗</th>
+                                                <th>状態</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>風景写真</td>
+                                                <td>
+                                                    <div class="avatar-group">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー1" class="avatar" data-bs-toggle="tooltip" title="山田太郎">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー2" class="avatar" data-bs-toggle="tooltip" title="佐藤花子">
+                                                    </div>
+                                                </td>
+                                                <td>2025/8/15</td>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge bg-success">進行中</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>キャラクターデザイン</td>
+                                                <td>
+                                                    <div class="avatar-group">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー3" class="avatar" data-bs-toggle="tooltip" title="鈴木一郎">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー4" class="avatar" data-bs-toggle="tooltip" title="高橋実">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー5" class="avatar" data-bs-toggle="tooltip" title="田中誠">
+                                                    </div>
+                                                </td>
+                                                <td>2025/9/1</td>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge bg-primary">進行中</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>SF世界観</td>
+                                                <td>
+                                                    <div class="avatar-group">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー6" class="avatar" data-bs-toggle="tooltip" title="伊藤健">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー7" class="avatar" data-bs-toggle="tooltip" title="渡辺裕子">
+                                                    </div>
+                                                </td>
+                                                <td>2025/8/30</td>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge bg-warning">要注意</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>ファンタジー</td>
+                                                <td>
+                                                    <div class="avatar-group">
+                                                        <img src="https://via.placeholder.com/32" alt="ユーザー8" class="avatar" data-bs-toggle="tooltip" title="小林直子">
+                                                    </div>
+                                                </td>
+                                                <td>2025/7/25</td>
+                                                <td>
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge bg-danger">遅延</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">プロジェクト状況</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="project-status-chart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近のアクティビティとタスク -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">最近のアクティビティ</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="activity-feed">
+                                    <div class="activity-item">
+                                        <div class="activity-icon bg-primary">
+                                            <i class="bi bi-person-plus"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">山田太郎さんがチームに参加しました</div>
+                                            <div class="activity-time">30分前</div>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon bg-success">
+                                            <i class="bi bi-file-earmark-plus"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">新しいプロンプトが追加されました</div>
+                                            <div class="activity-subtitle">「夕暮れの海岸線」</div>
+                                            <div class="activity-time">2時間前</div>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon bg-info">
+                                            <i class="bi bi-chat-dots"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">佐藤花子さんがコメントしました</div>
+                                            <div class="activity-subtitle">「このプロンプトは素晴らしいですね！」</div>
+                                            <div class="activity-time">昨日</div>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon bg-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">プロジェクト「風景写真」が更新されました</div>
+                                            <div class="activity-time">2日前</div>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon bg-danger">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">プロジェクト「ファンタジー」の期限が近づいています</div>
+                                            <div class="activity-time">3日前</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">今週のタスク</h5>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus"></i> 新規タスク
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task1">
+                                            <label class="form-check-label" for="task1">
+                                                風景写真プロジェクトのプロンプト作成
+                                            </label>
+                                        </div>
+                                        <div class="task-meta">
+                                            <span class="badge bg-primary">高優先度</span>
+                                            <span class="task-due">今日まで</span>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task2">
+                                            <label class="form-check-label" for="task2">
+                                                チームミーティングの準備
+                                            </label>
+                                        </div>
+                                        <div class="task-meta">
+                                            <span class="badge bg-success">中優先度</span>
+                                            <span class="task-due">明日まで</span>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task3" checked>
+                                            <label class="form-check-label text-decoration-line-through" for="task3">
+                                                プロジェクト進捗レポートの作成
+                                            </label>
+                                        </div>
+                                        <div class="task-meta">
+                                            <span class="badge bg-secondary">完了</span>
+                                            <span class="task-due">昨日</span>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task4">
+                                            <label class="form-check-label" for="task4">
+                                                キャラクターデザインのフィードバック
+                                            </label>
+                                        </div>
+                                        <div class="task-meta">
+                                            <span class="badge bg-warning">低優先度</span>
+                                            <span class="task-due">7/20まで</span>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item task-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="task5">
+                                            <label class="form-check-label" for="task5">
+                                                新メンバーのオンボーディング
+                                            </label>
+                                        </div>
+                                        <div class="task-meta">
+                                            <span class="badge bg-info">中優先度</span>
+                                            <span class="task-due">7/22まで</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="#" class="btn btn-sm btn-link">すべてのタスクを表示</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

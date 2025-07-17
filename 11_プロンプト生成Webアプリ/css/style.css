@@ -1,0 +1,334 @@
+/* プロンプト生成Webアプリ用スタイル */
+
+:root {
+    --primary-color: #0d6efd;
+    --primary-hover: #0b5ed7;
+    --secondary-color: #6c757d;
+    --light-bg: #f8f9fa;
+    --dark-bg: #212529;
+    --light-card-bg: #ffffff;
+    --dark-card-bg: #343a40;
+    --light-card-header: #f1f3f5;
+    --dark-card-header: #2c3136;
+    --light-text: #333333;
+    --dark-text: #f8f9fa;
+    --light-border: #dee2e6;
+    --dark-border: #495057;
+    --light-hover: #f1f3f5;
+    --dark-hover: #3a4047;
+    --transition-speed: 0.3s;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* ダークモード */
+body.dark-mode {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.dark-mode .card {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .card-header {
+    background-color: var(--dark-card-header);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .list-group-item {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode .bg-light {
+    background-color: var(--dark-card-bg) !important;
+    color: var(--dark-text);
+}
+
+.dark-mode .text-muted {
+    color: #adb5bd !important;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.dark-mode .form-check-input {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+}
+
+.dark-mode .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.dark-mode .suggestion-badge {
+    background-color: var(--dark-card-header) !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode .modal-content {
+    background-color: var(--dark-card-bg);
+    color: var(--dark-text);
+}
+
+.dark-mode .modal-header,
+.dark-mode .modal-footer {
+    border-color: var(--dark-border);
+}
+
+.dark-mode .bg-light {
+    background-color: var(--dark-card-bg) !important;
+}
+
+.dark-mode footer.bg-light {
+    background-color: var(--dark-card-header) !important;
+}
+
+/* ナビゲーションバー */
+.navbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* カード */
+.card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: var(--light-card-header);
+    border-bottom: 1px solid var(--light-border);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* プロンプト出力 */
+#prompt-output,
+#english-prompt {
+    min-height: 100px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid var(--light-border);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* 保存されたプロンプト */
+.saved-prompt-item {
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.saved-prompt-item:hover {
+    background-color: var(--light-hover);
+}
+
+.dark-mode .saved-prompt-item:hover {
+    background-color: var(--dark-hover);
+}
+
+.prompt-text {
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* フォーム要素 */
+.form-range::-webkit-slider-thumb {
+    background: var(--primary-color);
+}
+
+.form-range::-moz-range-thumb {
+    background: var(--primary-color);
+}
+
+.form-range::-ms-thumb {
+    background: var(--primary-color);
+}
+
+/* ボタン */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* サジェスト */
+.suggestion-badge {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.suggestion-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* アスペクト比ボタン */
+.aspect-ratio-btn {
+    transition: all 0.2s;
+}
+
+.aspect-ratio-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* フッター */
+footer {
+    border-top: 1px solid var(--light-border);
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0.25rem;
+    }
+    
+    .prompt-text {
+        max-width: 50%;
+    }
+}
+
+/* アニメーション効果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* ツールチップスタイル */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* モーダル */
+.modal-header,
+.modal-footer {
+    border-color: var(--light-border);
+}
+
+/* サンプルカード */
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+    background: #2c3136;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: #666;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* フォーカス状態 */
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus,
+.dark-mode .btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+}
+
+/* プレースホルダー */
+.dark-mode ::placeholder {
+    color: #adb5bd !important;
+}
+
+/* スイッチ */
+.form-switch .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* ボタングループ */
+.btn-group > .btn {
+    border-radius: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.btn-group > .btn:last-child {
+    margin-right: 0;
+}

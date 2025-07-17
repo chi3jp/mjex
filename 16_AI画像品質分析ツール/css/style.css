@@ -1,0 +1,83 @@
+/* AI画像品質分析ツール用スタイル */
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+.card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 1.5rem;
+}
+.card-header {
+    background-color: #f1f3f5;
+    border-bottom: 1px solid #e9ecef;
+}
+/* ドロップエリア */
+.drop-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 5px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    height: 150px;
+}
+.drop-area:hover, .drop-area.dragover {
+    border-color: #6c757d;
+    background-color: #f8f9fa;
+}
+.drop-area i {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+/* プレビューコンテナ */
+.preview-container {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    height: 300px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+.preview-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.preview-container i {
+    color: #adb5bd;
+}
+/* 分析結果 */
+.tab-content {
+    background-color: #fff;
+}
+/* カラーパレット */
+.color-swatch {
+    width: 50px;
+    height: 50px;
+    margin: 0 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+    .drop-area {
+        height: 100px;
+    }
+    .preview-container {
+        height: 200px;
+    }
+}
+/* アニメーション */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+/* ローディングスピナー */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

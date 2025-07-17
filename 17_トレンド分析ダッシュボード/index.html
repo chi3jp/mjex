@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIプロンプトトレンド分析ダッシュボード</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-graph-up"></i> AIプロンプトトレンド分析
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">ダッシュボード</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">トレンドレポート</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">データソース</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="timeRangeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            過去30日間
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="timeRangeDropdown">
+                            <li><a class="dropdown-item" href="#" data-range="7">過去7日間</a></li>
+                            <li><a class="dropdown-item active" href="#" data-range="30">過去30日間</a></li>
+                            <li><a class="dropdown-item" href="#" data-range="90">過去90日間</a></li>
+                            <li><a class="dropdown-item" href="#" data-range="365">過去1年間</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary ms-2" id="refresh-btn">
+                        <i class="bi bi-arrow-clockwise"></i> 更新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>デモ・プロトタイプ版</strong> - このアプリはデモンストレーション用です。実際のトレンド分析には、データ収集APIとデータベースが必要です。
+            <hr>
+            <p>推奨API: <a href="https://www.algolia.com/" target="_blank">Algolia API</a> (無料枠あり) または <a href="https://www.elastic.co/" target="_blank">Elasticsearch</a> (セルフホスト可能)</p>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5 class="card-title">トレンドキーワード数</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-primary">
+                                <i class="bi bi-hash"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h2 class="stat-value">247</h2>
+                                <p class="stat-change positive">
+                                    <i class="bi bi-arrow-up"></i> 12% <span class="text-muted">vs 前期間</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5 class="card-title">平均プロンプト長</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-success">
+                                <i class="bi bi-text-paragraph"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h2 class="stat-value">156</h2>
+                                <p class="stat-change positive">
+                                    <i class="bi bi-arrow-up"></i> 8% <span class="text-muted">vs 前期間</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5 class="card-title">新規スタイル</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-info">
+                                <i class="bi bi-palette"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h2 class="stat-value">32</h2>
+                                <p class="stat-change positive">
+                                    <i class="bi bi-arrow-up"></i> 24% <span class="text-muted">vs 前期間</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5 class="card-title">人気上昇率</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-warning">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h2 class="stat-value">18%</h2>
+                                <p class="stat-change negative">
+                                    <i class="bi bi-arrow-down"></i> 3% <span class="text-muted">vs 前期間</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">トレンドキーワード推移</h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active" data-view="daily">日次</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-view="weekly">週次</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-view="monthly">月次</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trend-chart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">人気キーワードランキング</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover keyword-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>順位</th>
+                                        <th>キーワード</th>
+                                        <th>変動</th>
+                                        <th>使用率</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>photorealistic</td>
+                                        <td><span class="badge bg-success"><i class="bi bi-arrow-up"></i> 2</span></td>
+                                        <td>68%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>cinematic lighting</td>
+                                        <td><span class="badge bg-secondary"><i class="bi bi-dash"></i> 0</span></td>
+                                        <td>65%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>8k resolution</td>
+                                        <td><span class="badge bg-success"><i class="bi bi-arrow-up"></i> 1</span></td>
+                                        <td>62%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>hyperdetailed</td>
+                                        <td><span class="badge bg-danger"><i class="bi bi-arrow-down"></i> 2</span></td>
+                                        <td>58%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>volumetric lighting</td>
+                                        <td><span class="badge bg-success"><i class="bi bi-arrow-up"></i> 3</span></td>
+                                        <td>52%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>octane render</td>
+                                        <td><span class="badge bg-danger"><i class="bi bi-arrow-down"></i> 1</span></td>
+                                        <td>49%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>unreal engine</td>
+                                        <td><span class="badge bg-success"><i class="bi bi-arrow-up"></i> 5</span></td>
+                                        <td>45%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>trending on artstation</td>
+                                        <td><span class="badge bg-danger"><i class="bi bi-arrow-down"></i> 3</span></td>
+                                        <td>42%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">スタイル分布</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="style-chart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">パラメータ使用頻度</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="parameter-chart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">新興トレンド予測</h5>
+                        <button class="btn btn-sm btn-outline-primary">レポート生成</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>キーワード</th>
+                                        <th>カテゴリ</th>
+                                        <th>成長率</th>
+                                        <th>予測信頼度</th>
+                                        <th>推定ピーク</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>analog film</td>
+                                        <td>写真スタイル</td>
+                                        <td>+215%</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                                            </div>
+                                        </td>
+                                        <td>2週間後</td>
+                                    </tr>
+                                    <tr>
+                                        <td>isometric pixel art</td>
+                                        <td>イラスト</td>
+                                        <td>+178%</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: 78%;" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100">78%</div>
+                                            </div>
+                                        </td>
+                                        <td>1ヶ月後</td>
+                                    </tr>
+                                    <tr>
+                                        <td>cyberpunk neon</td>
+                                        <td>世界観</td>
+                                        <td>+145%</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: 72%;" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100">72%</div>
+                                            </div>
+                                        </td>
+                                        <td>3週間後</td>
+                                    </tr>
+                                    <tr>
+                                        <td>botanical illustration</td>
+                                        <td>自然</td>
+                                        <td>+132%</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-primary" role="progressbar" style="width: 68%;" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100">68%</div>
+                                            </div>
+                                        </td>
+                                        <td>1ヶ月後</td>
+                                    </tr>
+                                    <tr>
+                                        <td>retro futurism</td>
+                                        <td>デザイン</td>
+                                        <td>+120%</td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 62%;" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100">62%</div>
+                                            </div>
+                                        </td>
+                                        <td>2ヶ月後</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">キーワードクラウド</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="keyword-cloud" class="keyword-cloud">
+                            <!-- キーワードクラウドはJavaScriptで生成 -->
+                            <div class="placeholder-text">
+                                <i class="bi bi-cloud" style="font-size: 3rem;"></i>
+                                <p class="mt-3">キーワードクラウドはJavaScriptライブラリで生成されます</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 AIプロンプトトレンド分析ダッシュボード</p>
+            <p class="text-muted small">このツールはMidjourneyの公式ツールではありません</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
