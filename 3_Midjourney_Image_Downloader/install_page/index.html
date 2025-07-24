@@ -530,18 +530,50 @@
           submitSignatureBtn.disabled = true;
           submitLoading.classList.remove("hidden");
 
-          // テスト環境では直接ダウンロードセクションを表示
-          setTimeout(function () {
-            // 署名完了メッセージ
-            alert("署名が完了しました。ダウンロードボタンが有効になりました。");
+          // Google Sheets APIのエンドポイント
+          const SHEET_SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbyTjxrqjsbJUusDVzd3tQSiouDfX48j99C6unDYg3e0ISOSkLKdf5lpnVfjJiFR-nJd/exec";
 
-            // ダウンロードセクションを表示
-            downloadSection.classList.remove("hidden");
+          // Google Sheetsに署名を送信
+          fetch(SHEET_SCRIPT_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              socialAccount: socialAccount,
+              browser: getBrowserInfo(),
+              os: getOSInfo(),
+              userAgent: navigator.userAgent,
+            }),
+            mode: "no-cors", // CORSエラーを回避するため
+          })
+            .then(() => {
+              // 署名完了メッセージ
+              alert(
+                "署名が完了しました。ダウンロードボタンが有効になりました。"
+              );
 
-            // 送信中の表示を解除
-            submitSignatureBtn.disabled = false;
-            submitLoading.classList.add("hidden");
-          }, 1000);
+              // ダウンロードセクションを表示
+              downloadSection.classList.remove("hidden");
+
+              // 送信中の表示を解除
+              submitSignatureBtn.disabled = false;
+              submitLoading.classList.add("hidden");
+            })
+            .catch((error) => {
+              console.error("署名の送信中にエラーが発生しました:", error);
+
+              // エラーが発生してもダウンロードは許可
+              alert(
+                "署名の記録中にエラーが発生しましたが、ダウンロードは可能です。"
+              );
+              downloadSection.classList.remove("hidden");
+
+              // 送信中の表示を解除
+              submitSignatureBtn.disabled = false;
+              submitLoading.classList.add("hidden");
+            });
         });
 
         // ダウンロードボタンのクリックイベント
@@ -568,6 +600,65 @@
             "https://drive.google.com/uc?export=download&id=" + fileId;
           link.click();
         });
+
+        // ブラウザ情報を取得する関数
+        function getBrowserInfo() {
+          const userAgent = navigator.userAgent;
+          let browserName = "不明";
+          let browserVersion = "";
+
+          if (userAgent.indexOf("Chrome") > -1) {
+            browserName = "Chrome";
+            try {
+              browserVersion = userAgent.match(/Chrome\/(\d+\.\d+)/)[1];
+            } catch (e) {
+              browserVersion = "";
+            }
+          } else if (userAgent.indexOf("Firefox") > -1) {
+            browserName = "Firefox";
+            try {
+              browserVersion = userAgent.match(/Firefox\/(\d+\.\d+)/)[1];
+            } catch (e) {
+              browserVersion = "";
+            }
+          } else if (userAgent.indexOf("Safari") > -1) {
+            browserName = "Safari";
+            try {
+              browserVersion = userAgent.match(/Version\/(\d+\.\d+)/)[1];
+            } catch (e) {
+              browserVersion = "";
+            }
+          } else if (userAgent.indexOf("Edge") > -1) {
+            browserName = "Edge";
+            try {
+              browserVersion = userAgent.match(/Edge\/(\d+\.\d+)/)[1];
+            } catch (e) {
+              browserVersion = "";
+            }
+          }
+
+          return `${browserName} ${browserVersion}`;
+        }
+
+        // OS情報を取得する関数
+        function getOSInfo() {
+          const userAgent = navigator.userAgent;
+          let osName = "不明";
+
+          if (userAgent.indexOf("Windows") > -1) {
+            osName = "Windows";
+          } else if (userAgent.indexOf("Mac") > -1) {
+            osName = "macOS";
+          } else if (userAgent.indexOf("Linux") > -1) {
+            osName = "Linux";
+          } else if (userAgent.indexOf("Android") > -1) {
+            osName = "Android";
+          } else if (userAgent.indexOf("iOS") > -1) {
+            osName = "iOS";
+          }
+
+          return osName;
+        }
       });
     </script>
   </body>
