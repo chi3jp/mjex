@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Midjourney画像ダウンローダー</title>
+    <style>
+      :root {
+        --primary: #5865f2;
+        --primary-dark: #4752c4;
+        --success: #3ba55c;
+        --success-dark: #2e8a49;
+        --danger: #ed4245;
+        --warning: #faa61a;
+        --text: #2e3338;
+        --bg: #f9f9f9;
+        --card-bg: #ffffff;
+        --border: #e6e6e6;
+        --radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        max-width: 800px;
+        width: 100%;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .card {
+        background-color: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        margin-bottom: 24px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+        color: #6c757d;
+        font-weight: 400;
+      }
+
+      .alert {
+        padding: 16px 20px;
+        border-radius: var(--radius);
+        margin-bottom: 24px;
+      }
+
+      .alert-danger {
+        background-color: rgba(237, 66, 69, 0.1);
+        border-left: 4px solid var(--danger);
+      }
+
+      .alert-info {
+        background-color: rgba(88, 101, 242, 0.1);
+        border-left: 4px solid var(--primary);
+      }
+
+      .alert-warning {
+        background-color: rgba(250, 166, 26, 0.1);
+        border-left: 4px solid var(--warning);
+      }
+
+      .alert h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+      }
+
+      .alert h2 svg {
+        margin-right: 8px;
+      }
+
+      .alert p,
+      .alert ul {
+        font-size: 15px;
+        margin-bottom: 0;
+      }
+
+      .alert ul {
+        padding-left: 20px;
+      }
+
+      .alert li {
+        margin-bottom: 4px;
+      }
+
+      .checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        padding: 16px;
+        background-color: rgba(88, 101, 242, 0.05);
+        border-radius: var(--radius);
+        margin-bottom: 24px;
+      }
+
+      .checkbox-container input[type="checkbox"] {
+        margin-right: 12px;
+        margin-top: 4px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .checkbox-container label {
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 15px;
+      }
+
+      .signature-section {
+        padding: 24px;
+        background-color: rgba(88, 101, 242, 0.05);
+        border-radius: var(--radius);
+        margin-bottom: 24px;
+      }
+
+      .signature-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .signature-section p {
+        font-size: 15px;
+        margin-bottom: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 15px;
+      }
+
+      .form-group .input-with-prefix {
+        display: flex;
+        align-items: center;
+      }
+
+      .form-group .prefix {
+        padding: 12px 16px;
+        background-color: rgba(88, 101, 242, 0.1);
+        border: 1px solid rgba(88, 101, 242, 0.2);
+        border-right: none;
+        border-radius: var(--radius) 0 0 var(--radius);
+        color: var(--primary);
+        font-weight: 500;
+      }
+
+      .form-group input {
+        flex-grow: 1;
+        padding: 12px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        font-size: 15px;
+      }
+
+      .form-group .input-with-prefix input {
+        border-radius: 0 var(--radius) var(--radius) 0;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .button-success {
+        background-color: var(--success);
+      }
+
+      .button-block {
+        display: block;
+        width: 100%;
+      }
+
+      .download-section {
+        text-align: center;
+        padding: 32px;
+        background-color: rgba(59, 165, 92, 0.1);
+        border-radius: var(--radius);
+        border: 1px solid rgba(59, 165, 92, 0.2);
+      }
+
+      .download-section h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--success);
+      }
+
+      .download-section p {
+        font-size: 15px;
+        margin-bottom: 24px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .instructions {
+        background-color: rgba(88, 101, 242, 0.05);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .instructions strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      footer {
+        text-align: center;
+        padding: 24px;
+        color: #6c757d;
+        font-size: 14px;
+        margin-top: auto;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 20px auto;
+        }
+
+        .card {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <svg
+            class="logo"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="24" height="24" rx="12" fill="#5865F2" />
+            <path
+              d="M17 8.5L13.5 7L12 4L10.5 7L7 8.5L9 11.5L8.5 15L12 13.5L15.5 15L15 11.5L17 8.5Z"
+              fill="white"
+            />
+          </svg>
+          <h1>Midjourney画像ダウンローダー</h1>
+          <p class="subtitle">Chrome拡張機能配布ページ</p>
+        </div>
+
+        <div class="alert alert-info">
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                stroke="#5865F2"
+                stroke-width="2"
+              />
+              <path
+                d="M12 16V12M12 8H12.01"
+                stroke="#5865F2"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            概要
+          </h2>
+          <p>
+            このChrome拡張機能は、Midjourneyのウェブサイトで生成された画像を簡単にダウンロードするためのツールです。高品質な画像を個別に、または一括でダウンロードすることができます。
+          </p>
+        </div>
+
+        <div class="alert alert-danger">
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                stroke="#ED4245"
+                stroke-width="2"
+              />
+              <path
+                d="M12 8V12M12 16H12.01"
+                stroke="#ED4245"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            重要な注意事項
+          </h2>
+          <ul>
+            <li>
+              <strong
+                >この拡張機能は自己責任でご利用ください。使用によって生じたいかなる問題や損害についても、作者は一切の責任を負いません。</strong
+              >
+            </li>
+            <li>
+              <strong
+                >この拡張機能の著作権は放棄していません。無断で他の人への譲渡や販売を行わないでください。</strong
+              >
+            </li>
+            <li>
+              <strong
+                >この拡張機能はCreateページ（自分が生成した画像）でのみ使用できます。</strong
+              >
+            </li>
+            <li><strong>動画には対応していません。</strong></li>
+          </ul>
+        </div>
+
+        <div class="alert alert-warning">
+          <h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                stroke="#FAA61A"
+                stroke-width="2"
+              />
+              <path
+                d="M12 8V12M12 16H12.01"
+                stroke="#FAA61A"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            免責事項
+          </h2>
+          <p>
+            この拡張機能の使用によって生じたいかなる問題、損害、不利益について、作者は一切の責任を負いません。ユーザーは自己責任で使用してください。また、Midjourneyの利用規約に従って画像を使用してください。
+          </p>
+        </div>
+
+        <!-- 同意チェックボックス -->
+        <div class="checkbox-container">
+          <input type="checkbox" id="agreeTerms" />
+          <label for="agreeTerms"
+            >上記の内容を理解し、自己責任で使用することに同意します</label
+          >
+        </div>
+
+        <!-- 署名セクション - 最初から表示 -->
+        <div id="signatureSection" class="signature-section">
+          <h3>署名</h3>
+          <p>
+            ダウンロードするには、Instagramのアカウントを入力してください。この情報は開発者のみが確認できます。
+          </p>
+
+          <form id="signatureForm">
+            <div class="form-group">
+              <label for="socialAccount">Instagramのアカウント</label>
+              <div class="input-with-prefix">
+                <span class="prefix">@</span>
+                <input
+                  type="text"
+                  id="socialAccount"
+                  required
+                  placeholder="アカウント名を入力してください（@は不要）"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              id="submitSignature"
+              class="button button-block"
+            >
+              署名を送信
+              <span id="submitLoading" class="loading hidden"></span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ダウンロードセクション -->
+        <div id="downloadSection" class="download-section hidden">
+          <h2>ダウンロード</h2>
+          <p>
+            ご署名ありがとうございます。以下のボタンから拡張機能をダウンロードできます。
+          </p>
+          <button id="downloadBtn" class="button button-success button-block">
+            拡張機能をダウンロード
+          </button>
+          <div class="instructions hidden" id="downloadInstructions">
+            <strong>ダウンロード後のインストール手順:</strong>
+            1. Chromeブラウザで chrome://extensions/ にアクセス<br />
+            2. 右上の「デベロッパーモード」をオンに<br />
+            3. 「パッケージ化されていない拡張機能を読み込む」をクリック<br />
+            4. ダウンロードしたフォルダを選択
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>&copy; 2025 Midjourney画像ダウンローダー</footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const agreeCheckbox = document.getElementById("agreeTerms");
+        const signatureSection = document.getElementById("signatureSection");
+        const signatureForm = document.getElementById("signatureForm");
+        const downloadSection = document.getElementById("downloadSection");
+        const submitSignatureBtn = document.getElementById("submitSignature");
+        const submitLoading = document.getElementById("submitLoading");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const downloadInstructions = document.getElementById(
+          "downloadInstructions"
+        );
+
+        // 同意チェックボックスの変更イベント
+        agreeCheckbox.addEventListener("change", function () {
+          // 署名セクションは常に表示されているので、この部分は変更しない
+          if (!this.checked) {
+            downloadSection.classList.add("hidden");
+          }
+        });
+
+        // 署名フォームの送信イベント
+        signatureForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // 同意チェックの確認
+          if (!agreeCheckbox.checked) {
+            alert("署名するには、規約に同意する必要があります。");
+            agreeCheckbox.focus();
+            return;
+          }
+
+          // フォームデータの取得
+          const socialAccount = document
+            .getElementById("socialAccount")
+            .value.trim();
+
+          // 入力チェック
+          if (!socialAccount) {
+            alert("Instagramアカウントを入力してください。");
+            return;
+          }
+
+          // 送信中の表示
+          submitSignatureBtn.disabled = true;
+          submitLoading.classList.remove("hidden");
+
+          // テスト環境では直接ダウンロードセクションを表示
+          setTimeout(function () {
+            // 署名完了メッセージ
+            alert("署名が完了しました。ダウンロードボタンが有効になりました。");
+
+            // ダウンロードセクションを表示
+            downloadSection.classList.remove("hidden");
+
+            // 送信中の表示を解除
+            submitSignatureBtn.disabled = false;
+            submitLoading.classList.add("hidden");
+          }, 1000);
+        });
+
+        // ダウンロードボタンのクリックイベント
+        downloadBtn.addEventListener("click", function () {
+          // 同意チェックの確認
+          if (!agreeCheckbox.checked) {
+            alert("ダウンロードするには、規約に同意する必要があります。");
+            downloadSection.classList.add("hidden");
+            agreeCheckbox.focus();
+            return;
+          }
+
+          // ダウンロード処理
+          alert(
+            "ダウンロードを開始します。\n\nZIPファイルを展開後、Chrome拡張機能としてインストールしてください。"
+          );
+          downloadInstructions.classList.remove("hidden");
+
+          // 実際のダウンロードリンクを作成
+          const link = document.createElement("a");
+          // Google Driveの直接ダウンロードリンクに変換
+          const fileId = "1lQbKxjD2WMisYfXA-bI8KKw2GZDka_Gm";
+          link.href =
+            "https://drive.google.com/uc?export=download&id=" + fileId;
+          link.click();
+        });
+      });
+    </script>
+  </body>
+</html>
